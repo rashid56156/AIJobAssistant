@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!--
+          Explicitly exclude the encrypted API key prefs file from cloud
+          backup. EncryptedSharedPreferences relies on a Keystore-bound key
+          that does NOT survive a restore to a new device, so a backed-up
+          key file would be useless ciphertext on the new device anyway -
+          excluding it avoids confusing "saved key" state that silently
+          can't be decrypted.
+        -->
+        <exclude domain="sharedpref" path="secure_api_key_prefs.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="secure_api_key_prefs.xml" />
+    </device-transfer>
+</data-extraction-rules>
