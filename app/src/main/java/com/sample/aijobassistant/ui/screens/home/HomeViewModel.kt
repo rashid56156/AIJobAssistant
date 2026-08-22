@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.aijobassistant.domain.model.AppResult
 import com.sample.aijobassistant.domain.model.ErrorType
-import com.sample.aijobassistant.domain.model.MatchAnalysis
 import com.sample.aijobassistant.domain.repository.DocumentTextExtractor
 import com.sample.aijobassistant.domain.usecase.AnalyzeJobMatchUseCase
 import com.sample.aijobassistant.domain.usecase.SaveAnalysisRecordUseCase
@@ -38,9 +37,9 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun clearResume() {
-        _uiState.value = _uiState.value.copy(resumeSource = ResumeSource.None)
-    }
+//    fun clearResume() {
+//        _uiState.value = _uiState.value.copy(resumeSource = ResumeSource.None)
+//    }
 
     /**
      * Called when the user picks a PDF via the system document picker. The
@@ -54,10 +53,10 @@ class HomeViewModel @Inject constructor(
 
             when (val result = documentTextExtractor.extractText(uriString)) {
                 is AppResult.Success -> {
-                    extractedPdfText = result.data
                     _uiState.value = _uiState.value.copy(
                         isExtractingPdf = false,
-                        resumeSource = ResumeSource.UploadedPdf(uriString, fileName)
+                        resumeSource = ResumeSource.UploadedPdf(uriString, fileName),
+                        extractedPdfText = result.data
                     )
                 }
                 is AppResult.Error -> {
@@ -70,17 +69,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Holds the text extracted from a selected PDF. Kept outside StateFlow
-    // since it's plumbing for analyze() rather than something the UI renders;
-    // the UI only needs to know a PDF was selected (file name) and whether
-    // extraction is in progress.
-    private var extractedPdfText: String? = null
-
     fun analyze() {
         val state = _uiState.value
         val resumeText = when (val source = state.resumeSource) {
             is ResumeSource.PastedText -> source.text
-            is ResumeSource.UploadedPdf -> extractedPdfText.orEmpty()
+            is ResumeSource.UploadedPdf -> state.extractedPdfText.orEmpty()
             ResumeSource.None -> ""
         }
 
