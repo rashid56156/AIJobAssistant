@@ -1,4 +1,4 @@
-package com.sample.aijobassistant.ui.screens.home
+package com.sample.aijobassistant.ui
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
@@ -8,9 +8,12 @@ import com.sample.aijobassistant.domain.model.MatchAnalysis
 import com.sample.aijobassistant.domain.repository.DocumentTextExtractor
 import com.sample.aijobassistant.domain.usecase.AnalyzeJobMatchUseCase
 import com.sample.aijobassistant.domain.usecase.SaveAnalysisRecordUseCase
+import com.sample.aijobassistant.ui.screens.home.HomeViewModel
+import com.sample.aijobassistant.ui.screens.home.ResumeSource
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -45,9 +48,11 @@ class HomeViewModelTest {
         analyzeJobMatchUseCase = mockk()
         saveAnalysisRecordUseCase = mockk()
         documentTextExtractor = mockk()
-        viewModel = HomeViewModel(analyzeJobMatchUseCase, saveAnalysisRecordUseCase, documentTextExtractor)
+        viewModel =
+            HomeViewModel(analyzeJobMatchUseCase, saveAnalysisRecordUseCase, documentTextExtractor)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()

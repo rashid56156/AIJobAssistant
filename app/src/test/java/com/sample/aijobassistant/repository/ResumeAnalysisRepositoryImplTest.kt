@@ -1,10 +1,11 @@
-package com.sample.aijobassistant.data.repository
+package com.sample.aijobassistant.repository
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.sample.aijobassistant.data.local.AnalysisRecordDao
 import com.sample.aijobassistant.data.local.AnalysisRecordEntity
 import com.sample.aijobassistant.data.remote.GeminiAnalysisDataSource
+import com.sample.aijobassistant.data.repository.ResumeAnalysisRepositoryImpl
 import com.sample.aijobassistant.domain.model.AppResult
 import com.sample.aijobassistant.domain.model.ErrorType
 import com.sample.aijobassistant.domain.model.MatchAnalysis
@@ -37,7 +38,11 @@ class ResumeAnalysisRepositoryImplTest {
         geminiAnalysisDataSource = mockk()
         analysisRecordDao = mockk()
         apiKeyRepository = mockk()
-        repository = ResumeAnalysisRepositoryImpl(geminiAnalysisDataSource, analysisRecordDao, apiKeyRepository)
+        repository = ResumeAnalysisRepositoryImpl(
+            geminiAnalysisDataSource,
+            analysisRecordDao,
+            apiKeyRepository
+        )
     }
 
     @Test

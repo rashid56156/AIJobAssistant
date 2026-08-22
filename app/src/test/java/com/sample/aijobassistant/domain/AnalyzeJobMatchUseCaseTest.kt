@@ -1,4 +1,4 @@
-package com.sample.aijobassistant.domain.usecase
+package com.sample.aijobassistant.domain
 
 import com.google.common.truth.Truth.assertThat
 import com.sample.aijobassistant.domain.model.AppResult
@@ -6,6 +6,7 @@ import com.sample.aijobassistant.domain.model.ErrorType
 import com.sample.aijobassistant.domain.model.MatchAnalysis
 import com.sample.aijobassistant.domain.repository.ApiKeyRepository
 import com.sample.aijobassistant.domain.repository.ResumeAnalysisRepository
+import com.sample.aijobassistant.domain.usecase.AnalyzeJobMatchUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
