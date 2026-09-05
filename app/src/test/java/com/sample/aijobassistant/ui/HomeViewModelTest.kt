@@ -14,6 +14,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -59,7 +60,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `analyze emits analyzing state then success state with completedRecordId set`() = runTest {
+    fun `analyze emits analyzing state then success state and navigation event`() = runTest {
         val analysis = MatchAnalysis(
             matchScore = 90,
             strengths = listOf("Kotlin", "Compose"),
@@ -73,6 +74,13 @@ class HomeViewModelTest {
         viewModel.onJobDescriptionChanged("Senior Android Engineer role")
         viewModel.onResumeTextChanged("10 years Kotlin and Android")
 
+        launch {
+            viewModel.navigationEvent.test {
+                val id = awaitItem()
+                assertThat(id).isEqualTo(7L)
+            }
+        }
+
         viewModel.uiState.test {
             // Consume the state already produced by the two onChanged calls above.
             awaitItem()
@@ -84,7 +92,6 @@ class HomeViewModelTest {
 
             val completed = awaitItem()
             assertThat(completed.isAnalyzing).isFalse()
-            assertThat(completed.completedRecordId).isEqualTo(7L)
         }
     }
 
