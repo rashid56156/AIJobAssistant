@@ -193,10 +193,9 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect(uiState.completedRecordId) {
-        uiState.completedRecordId?.let { id ->
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect { id ->
             onAnalysisComplete(id)
-            viewModel.consumeNavigationEvent()
         }
     }
 }

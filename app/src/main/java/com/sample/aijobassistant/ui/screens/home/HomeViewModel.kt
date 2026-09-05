@@ -8,8 +8,10 @@ import com.sample.aijobassistant.domain.repository.DocumentTextExtractor
 import com.sample.aijobassistant.domain.usecase.AnalyzeJobMatchUseCase
 import com.sample.aijobassistant.domain.usecase.SaveAnalysisRecordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +28,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _navigationEvent = MutableSharedFlow<Long>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
     fun onJobDescriptionChanged(value: String) {
         _uiState.value = _uiState.value.copy(jobDescription = value, errorMessage = null)
     }
@@ -37,9 +42,6 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-//    fun clearResume() {
-//        _uiState.value = _uiState.value.copy(resumeSource = ResumeSource.None)
-//    }
 
     /**
      * Called when the user picks a PDF via the system document picker. The
@@ -88,7 +90,9 @@ class HomeViewModel @Inject constructor(
                         jobTitle = deriveJobTitle(state.jobDescription),
                         analysis = result.data
                     )
-                    _uiState.value = _uiState.value.copy(isAnalyzing = false, completedRecordId = recordId)
+                    _uiState.value = _uiState.value.copy(
+                        isAnalyzing = false)
+                    _navigationEvent.emit(recordId)
                 }
                 is AppResult.Error -> {
                     _uiState.value = _uiState.value.copy(
@@ -101,9 +105,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun consumeNavigationEvent() {
-        _uiState.value = _uiState.value.copy(completedRecordId = null)
-    }
 
     /** Best-effort first line as a human-readable title for history entries. */
     private fun deriveJobTitle(jobDescription: String): String =

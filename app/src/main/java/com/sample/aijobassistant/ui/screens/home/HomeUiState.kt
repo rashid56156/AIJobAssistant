@@ -7,6 +7,5 @@ data class HomeUiState(
     val isExtractingPdf: Boolean = false,
     val isAnalyzing: Boolean = false,
     val errorMessage: String? = null,
-    val needsApiKey: Boolean = false,
-    val completedRecordId: Long? = null
+    val needsApiKey: Boolean = false
 )
