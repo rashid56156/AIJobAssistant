@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import androidx.core.net.toUri
 import javax.inject.Singleton
 
 /**
@@ -29,7 +30,7 @@ class PdfDocumentTextExtractor @Inject constructor(
 
     override suspend fun extractText(uriString: String): AppResult<String> = withContext(Dispatchers.IO) {
         try {
-            val uri = android.net.Uri.parse(uriString)
+            val uri = uriString.toUri()
             val inputStream = context.contentResolver.openInputStream(uri)
                 ?: return@withContext AppResult.Error(
                     ErrorType.PDF_PARSE_FAILURE,

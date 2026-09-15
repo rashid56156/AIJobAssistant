@@ -7,6 +7,7 @@ import com.sample.aijobassistant.domain.repository.ApiKeyRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.core.content.edit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,7 +44,7 @@ class SecureApiKeyStorage @Inject constructor(
     }
 
     override suspend fun saveApiKey(key: String) = withContext(Dispatchers.IO) {
-        encryptedPrefs.edit().putString(KEY_API_KEY, key).apply()
+        encryptedPrefs.edit() {putString(KEY_API_KEY, key)}
     }
 
     override suspend fun getApiKey(): String? = withContext(Dispatchers.IO) {
@@ -55,7 +56,7 @@ class SecureApiKeyStorage @Inject constructor(
     }
 
     override suspend fun clearApiKey() = withContext(Dispatchers.IO) {
-        encryptedPrefs.edit().remove(KEY_API_KEY).apply()
+        encryptedPrefs.edit() {remove(KEY_API_KEY)}
     }
 
     private companion object {

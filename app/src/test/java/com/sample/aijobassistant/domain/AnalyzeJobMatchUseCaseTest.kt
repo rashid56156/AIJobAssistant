@@ -2,9 +2,7 @@ package com.sample.aijobassistant.domain
 
 import com.google.common.truth.Truth.assertThat
 import com.sample.aijobassistant.domain.model.AppResult
-import com.sample.aijobassistant.domain.model.ErrorType
 import com.sample.aijobassistant.domain.model.MatchAnalysis
-import com.sample.aijobassistant.domain.repository.ApiKeyRepository
 import com.sample.aijobassistant.domain.repository.ResumeAnalysisRepository
 import com.sample.aijobassistant.domain.usecase.AnalyzeJobMatchUseCase
 import io.mockk.coEvery
@@ -27,14 +25,12 @@ import org.junit.Test
 class AnalyzeJobMatchUseCaseTest {
 
     private lateinit var resumeAnalysisRepository: ResumeAnalysisRepository
-    private lateinit var apiKeyRepository: ApiKeyRepository
     private lateinit var useCase: AnalyzeJobMatchUseCase
 
     @Before
     fun setUp() {
         resumeAnalysisRepository = mockk()
-        apiKeyRepository = mockk()
-        useCase = AnalyzeJobMatchUseCase(resumeAnalysisRepository, apiKeyRepository)
+        useCase = AnalyzeJobMatchUseCase(resumeAnalysisRepository)
     }
 
     @Test
@@ -54,18 +50,7 @@ class AnalyzeJobMatchUseCaseTest {
     }
 
     @Test
-    fun `missing api key returns MISSING_API_KEY error without calling repository`() = runTest {
-        coEvery { apiKeyRepository.hasApiKey() } returns false
-
-        val result = useCase(jobDescription = "Senior Android Engineer", resumeText = "10 years Kotlin")
-
-        assertThat(result).isInstanceOf(AppResult.Error::class.java)
-        assertThat((result as AppResult.Error).type).isEqualTo(ErrorType.MISSING_API_KEY)
-        coVerify(exactly = 0) { resumeAnalysisRepository.analyzeMatch(any(), any()) }
-    }
-
-    @Test
-    fun `valid input with api key present delegates to repository and returns its result`() = runTest {
+    fun `valid input with delegates to repository and returns its result`() = runTest {
         val expected = MatchAnalysis(
             matchScore = 82,
             strengths = listOf("Strong Kotlin background"),
@@ -73,7 +58,6 @@ class AnalyzeJobMatchUseCaseTest {
             suggestions = listOf("Highlight architecture experience"),
             summary = "Strong overall fit."
         )
-        coEvery { apiKeyRepository.hasApiKey() } returns true
         coEvery {
             resumeAnalysisRepository.analyzeMatch("Senior Android Engineer", "10 years Kotlin")
         } returns AppResult.Success(expected)
