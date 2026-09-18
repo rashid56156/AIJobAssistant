@@ -2,8 +2,8 @@ package com.sample.aijobassistant.domain.usecase
 
 import com.sample.aijobassistant.domain.model.AnalysisRecord
 import com.sample.aijobassistant.domain.model.MatchAnalysis
+import com.sample.aijobassistant.domain.repository.AnalysisHistoryRepository
 import com.sample.aijobassistant.domain.repository.ApiKeyRepository
-import com.sample.aijobassistant.domain.repository.ResumeAnalysisRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -31,18 +31,18 @@ class ClearApiKeyUseCase @Inject constructor(
 }
 
 class SaveAnalysisRecordUseCase @Inject constructor(
-    private val resumeAnalysisRepository: ResumeAnalysisRepository
+    private val analysisHistoryRepository: AnalysisHistoryRepository
 ) {
     suspend operator fun invoke(jobTitle: String, analysis: MatchAnalysis): Long {
         val title = jobTitle.ifBlank { "Untitled role" }
-        return resumeAnalysisRepository.saveRecord(title, analysis)
+        return analysisHistoryRepository.saveRecord(title, analysis)
     }
 }
 
 class GetHistoryUseCase @Inject constructor(
-    private val resumeAnalysisRepository: ResumeAnalysisRepository
+    private val analysisHistoryRepository: AnalysisHistoryRepository
 ) {
-    operator fun invoke(): Flow<List<AnalysisRecord>> = resumeAnalysisRepository.getHistory()
+    operator fun invoke(): Flow<List<AnalysisRecord>> = analysisHistoryRepository.getHistory()
 }
 
 /**
@@ -54,14 +54,14 @@ class GetHistoryUseCase @Inject constructor(
  * (single user's local data) so the cost is negligible.
  */
 class GetAnalysisRecordByIdUseCase @Inject constructor(
-    private val resumeAnalysisRepository: ResumeAnalysisRepository
+    private val analysisHistoryRepository: AnalysisHistoryRepository
 ) {
     operator fun invoke(id: Long): Flow<AnalysisRecord?> =
-        resumeAnalysisRepository.getHistory().map { records -> records.firstOrNull { it.id == id } }
+        analysisHistoryRepository.getHistory().map { records -> records.firstOrNull { it.id == id } }
 }
 
 class DeleteAnalysisRecordUseCase @Inject constructor(
-    private val resumeAnalysisRepository: ResumeAnalysisRepository
+    private val analysisHistoryRepository: AnalysisHistoryRepository
 ) {
-    suspend operator fun invoke(id: Long) = resumeAnalysisRepository.deleteRecord(id)
+    suspend operator fun invoke(id: Long) = analysisHistoryRepository.deleteRecord(id)
 }

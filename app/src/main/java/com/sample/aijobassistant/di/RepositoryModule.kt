@@ -2,7 +2,9 @@ package com.sample.aijobassistant.di
 
 import com.sample.aijobassistant.data.local.PdfDocumentTextExtractor
 import com.sample.aijobassistant.data.local.SecureApiKeyStorage
+import com.sample.aijobassistant.data.repository.HistoryAnalysisRepositoryImpl
 import com.sample.aijobassistant.data.repository.ResumeAnalysisRepositoryImpl
+import com.sample.aijobassistant.domain.repository.AnalysisHistoryRepository
 import com.sample.aijobassistant.domain.repository.ApiKeyRepository
 import com.sample.aijobassistant.domain.repository.DocumentTextExtractor
 import com.sample.aijobassistant.domain.repository.ResumeAnalysisRepository
@@ -26,6 +28,11 @@ abstract class RepositoryModule {
     abstract fun bindResumeAnalysisRepository(
         impl: ResumeAnalysisRepositoryImpl
     ): ResumeAnalysisRepository
+
+    @Binds
+    abstract fun bindAnalysisHistoryRepository(
+        impl: HistoryAnalysisRepositoryImpl
+    ): AnalysisHistoryRepository
 
     @Binds
     abstract fun bindApiKeyRepository(

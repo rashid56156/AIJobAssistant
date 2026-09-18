@@ -12,17 +12,17 @@ import kotlinx.coroutines.flow.Flow
  * cases with a fake repository instead of mocking Android/network internals.
  */
 interface ResumeAnalysisRepository {
+    suspend fun analyzeMatch(jobDescription: String,resumeText: String): AppResult<MatchAnalysis>
+}
 
-    suspend fun analyzeMatch(
-        jobDescription: String,
-        resumeText: String
-    ): AppResult<MatchAnalysis>
+interface AnalysisHistoryRepository {
 
     suspend fun saveRecord(jobTitle: String, analysis: MatchAnalysis): Long
 
     fun getHistory(): Flow<List<AnalysisRecord>>
 
     suspend fun deleteRecord(id: Long)
+
 }
 
 /**
