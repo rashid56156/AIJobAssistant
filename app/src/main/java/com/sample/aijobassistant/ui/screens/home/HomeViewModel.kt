@@ -1,5 +1,6 @@
 package com.sample.aijobassistant.ui.screens.home
 
+import android.view.inputmethod.InputBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.aijobassistant.domain.model.AppResult
@@ -24,7 +25,6 @@ class HomeViewModel @Inject constructor(
     private val saveAnalysisRecordUseCase: SaveAnalysisRecordUseCase,
     private val documentTextExtractor: DocumentTextExtractor
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
