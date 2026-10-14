@@ -6,6 +6,9 @@ import com.sample.aijobassistant.data.local.AnalysisRecordDao
 import com.sample.aijobassistant.data.local.AnalysisRecordEntity
 import com.sample.aijobassistant.data.remote.GeminiAnalysisDataSource
 import com.sample.aijobassistant.data.repository.HistoryAnalysisRepositoryImpl
+import com.sample.aijobassistant.data.repository.ResumeAnalysisRepositoryImpl
+import com.sample.aijobassistant.domain.model.AppResult
+import com.sample.aijobassistant.domain.model.ErrorType
 import com.sample.aijobassistant.domain.model.MatchAnalysis
 import com.sample.aijobassistant.domain.repository.ApiKeyRepository
 import io.mockk.coEvery
