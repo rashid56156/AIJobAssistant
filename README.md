@@ -61,6 +61,35 @@ di/            Hilt modules binding domain interfaces to data implementations
 - PdfBox-Android (resume PDF text extraction)
 - Coroutines + Flow throughout
 - MockK + Turbine + Truth for testing
+- GitHub Actions (continuous integration)
+
+## Continuous integration
+
+Every push to `master`, and every pull request into `master`,
+runs a GitHub Actions workflow defined in 
+[`.github/workflows/android-ci.yml`](.github/workflows/android-ci.yml).
+
+On a fresh Ubuntu runner, the workflow:
+
+1. Checks out the code.
+2. Installs JDK 17 (Temurin).
+3. Sets up Gradle with dependency and build caching, so repeat runs don't re-download everything.
+4. Runs the unit tests: `./gradlew testDebugUnitTest`
+5. Builds the debug APK: `./gradlew assembleDebug`
+
+If any step fails, the run is marked red on the commit or pull request.
+
+The pipeline needs no secrets and no API key: unit tests don't call the real Gemini API,
+and only the debug build is produced, so nothing is signed.
+
+### Run the same checks locally
+
+```
+./gradlew testDebugUnitTest
+./gradlew assembleDebug
+```
+
+These are exactly the commands CI runs, so a green local run should match a green CI run.
 
 ## Known limitations (honest scope notes)
 
@@ -70,6 +99,7 @@ This is a v1 portfolio project, not a production app. Known gaps:
 - No retry/backoff on transient Gemini API errors beyond a single attempt.
 - No rate-limit handling beyond surfacing the 429 response as an error message.
 - Single-user, local-only history; nothing syncs across devices.
+- CI covers unit tests and a debug build only.Up
 
 ## Contributing
 
