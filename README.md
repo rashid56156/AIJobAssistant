@@ -74,8 +74,9 @@ On a fresh Ubuntu runner, the workflow:
 1. Checks out the code.
 2. Installs JDK 17 (Temurin).
 3. Sets up Gradle with dependency and build caching, so repeat runs don't re-download everything.
-4. Runs the unit tests: `./gradlew testDebugUnitTest`
-5. Builds the debug APK: `./gradlew assembleDebug`
+4. Runs Android Lint: `./gradlew lintDebug`
+5. Runs the unit tests: `./gradlew testDebugUnitTest`
+6. Builds the debug APK: `./gradlew assembleDebug`
 
 If any step fails, the run is marked red on the commit or pull request.
 
@@ -91,6 +92,20 @@ and only the debug build is produced, so nothing is signed.
 
 These are exactly the commands CI runs, so a green local run should match a green CI run.
 
+## Releases
+
+Pushing a version tag publishes a downloadable APK as a GitHub Release,
+using [`.github/workflows/release.yml`](.github/workflows/release.yml).
+
+```
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The workflow builds the app and attaches the APK to a new release page for that tag. Find it under **Releases** on the right side of the repository page.
+
+These are **debug builds**, signed with the automatic debug key. They are for trying the app out, not for the Play Store.
+
 ## Known limitations (honest scope notes)
 
 This is a v1 portfolio project, not a production app. Known gaps:
@@ -99,7 +114,7 @@ This is a v1 portfolio project, not a production app. Known gaps:
 - No retry/backoff on transient Gemini API errors beyond a single attempt.
 - No rate-limit handling beyond surfacing the 429 response as an error message.
 - Single-user, local-only history; nothing syncs across devices.
-- CI covers unit tests and a debug build only.Up
+- CI covers lint, unit tests and a debug build only.There are no instrumented (emulator) tests, and no automated Play Store deployment yet.
 
 ## Contributing
 
